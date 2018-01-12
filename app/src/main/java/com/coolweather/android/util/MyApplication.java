@@ -20,7 +20,7 @@ public class MyApplication extends Application {
         LitePalApplication.initialize(mcontext);
     }
 
-    public static Context getComtext(){
+    public static Context getContext(){
         return mcontext;
     }
 }
