@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -9,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
+import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -49,8 +50,9 @@ public class WeatherActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     private Button navButton;
 
-    private String key="b348de7c047d4e15abc383861d4226ea";
-
+    public static final String WEATHER_ROOT_NAME ="http://guolin.tech/api/weather?cityid=";
+    public static final String KEY ="b348de7c047d4e15abc383861d4226ea";
+    public static final String REQUEST_BING_PIC = "http://guolin.tech/api/bing_pic";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +99,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void loadBingPic() {
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
-        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+        HttpUtil.sendOkHttpRequest(REQUEST_BING_PIC, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -121,7 +122,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void requestWeather(String weatherId) {
-        String weatherURL= "http://guolin.tech/api/weather?cityid="+weatherId+"&key="+key;
+        String weatherURL = WEATHER_ROOT_NAME + weatherId + "&KEY=" + KEY;
         HttpUtil.sendOkHttpRequest(weatherURL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -184,6 +185,8 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText("洗车指数："+weather.suggestion.carWash.info);
         sportText.setText("运动建议："+weather.suggestion.sport.info);
         weatherLayout.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void getWidgets() {
