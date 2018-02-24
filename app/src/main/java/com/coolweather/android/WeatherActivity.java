@@ -122,7 +122,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     public void requestWeather(String weatherId) {
-        String weatherURL = WEATHER_ROOT_NAME + weatherId + "&KEY=" + KEY;
+        String weatherURL = WEATHER_ROOT_NAME + weatherId + "&key=" + KEY;
         HttpUtil.sendOkHttpRequest(weatherURL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
